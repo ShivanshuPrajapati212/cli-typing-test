@@ -20,8 +20,7 @@ const (
 )
 
 var (
-	quote     string = "hello bro you are nice man, and i like you to be my friend"
-	currPos   int    = 0
+	currPos   int = 0
 	startTime time.Time
 	currColor string = Reset
 )
@@ -53,6 +52,8 @@ func main() {
 			charChan <- buf[0]
 		}
 	}()
+
+	quote := getQuote(10)
 
 	for {
 		select {
