@@ -68,9 +68,13 @@ func main() {
 
 				fmt.Print("\033[2J")
 				fmt.Printf("\033[%d;%dH", height/2, (width/2)-7)
-				fmt.Printf("Your WPM is %0.f", wpm)
-
-				return
+				fmt.Printf("Your WPM is %0.f , ", wpm)
+				fmt.Print("Press e to start again!")
+				if string(char) == "e" {
+					quote = getQuote(10)
+					currPos = 0
+				}
+				continue
 			}
 			if currPos == 0 {
 				startTime = time.Now()
