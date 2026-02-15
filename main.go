@@ -6,13 +6,24 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
 	"golang.org/x/term"
 )
 
+const (
+	Reset  = "\033[0m"
+	Red    = "\033[31m"
+	Green  = "\033[32m"
+	Yellow = "\033[33m"
+	Blue   = "\033[34m"
+)
+
 var (
-	quote   string = "hello bro you are nice man, and i like you to be my friend"
-	currPos int    = 0
+	quote     string = "hello bro you are nice man, and i like you to be my friend"
+	currPos   int    = 0
+	startTime time.Time
+	currColor string = Reset
 )
 
 func main() {
@@ -51,19 +62,41 @@ func main() {
 				return
 			}
 			if currPos >= len(quote)-1 {
-				fmt.Print("You did it.")
+				endTime := time.Since(startTime)
+				wpm := float64(len(quote)/5) / endTime.Minutes()
+
+				fmt.Print("\033[2J")
+				fmt.Printf("\033[%d;%dH", height/2, (width/2)-7)
+				fmt.Printf("Your WPM is %0.f", wpm)
+
 				return
+			}
+			if currPos == 0 {
+				startTime = time.Now()
 			}
 
 			if char == quote[currPos] {
 				currPos++
+				currColor = Green
+			}
+			if char != quote[currPos] {
+				currColor = Red
 			}
 
-			fmt.Print("\033[2J")
+			typedQuote := ""
+			if currPos == 0 {
+				typedQuote = ""
+			} else {
+				typedQuote = quote[0:currPos]
+			}
 
+			remainingQuote := quote[currPos+1:]
+			currQuote := quote[currPos]
+
+			fmt.Print("\033[2J")
 			fmt.Printf("\033[%d;%dH", height/2, (width/2)-len(quote)/2)
 
-			fmt.Print(quote)
+			fmt.Print(Green + typedQuote + Reset + currColor + string(currQuote) + Reset + remainingQuote)
 
 			fmt.Printf("\033[%d;%dH", height/2, (width/2)-len(quote)/2+currPos)
 
