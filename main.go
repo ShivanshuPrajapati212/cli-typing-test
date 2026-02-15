@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"os/signal"
+	"strconv"
 	"syscall"
 	"time"
 
@@ -20,15 +21,21 @@ const (
 )
 
 var (
-	currPos   int = 0
-	startTime time.Time
-	currColor string = Reset
+	currPos     int = 0
+	startTime   time.Time
+	currColor   string = Reset
+	quoteLength int
 )
 
 func main() {
-	width, height, err := term.GetSize(int(os.Stdout.Fd()))
-	if err != nil {
-		log.Fatalf("Could not get terminal size: %v", err)
+	if len(os.Args) >= 2 {
+		length, err := strconv.Atoi(os.Args[1])
+		if err != nil {
+			log.Fatal("hahaha")
+		}
+		quoteLength = length
+	} else {
+		quoteLength = 10
 	}
 
 	sigs := make(chan os.Signal, 1)
@@ -53,11 +60,16 @@ func main() {
 		}
 	}()
 
-	quote := getQuote(10)
+	quote := getQuote(quoteLength)
 
 	for {
 		select {
 		case char := <-charChan:
+
+			width, height, err := term.GetSize(int(os.Stdout.Fd()))
+			if err != nil {
+				log.Fatalf("Could not get terminal size: %v", err)
+			}
 			if char == 3 {
 				fmt.Print("\r\nManual Ctrl+C detected. Exiting...\r\n")
 				return
@@ -71,7 +83,7 @@ func main() {
 				fmt.Printf("Your WPM is %0.f , ", wpm)
 				fmt.Print("Press e to start again!")
 				if string(char) == "e" {
-					quote = getQuote(10)
+					quote = getQuote(quoteLength)
 					currPos = 0
 				}
 				continue
