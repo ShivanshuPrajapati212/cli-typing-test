@@ -1,19 +1,15 @@
 package main
 
 import (
-	"log"
-	"os"
-	"strconv"
+	"flag"
 )
 
 func readArgs() {
-	if len(os.Args) >= 2 {
-		length, err := strconv.Atoi(os.Args[1])
-		if err != nil {
-			log.Fatal("hahaha")
-		}
-		quoteLength = length
-	} else {
-		quoteLength = 10
-	}
+	quoteLengthArg := flag.Int("length", 10, "Enter the no. of words")
+	stopOnErrorArg := flag.Bool("stop-on-error", false, "Set wheather to stop on error or not.")
+
+	flag.Parse()
+
+	quoteLength = *quoteLengthArg
+	stopOnError = *stopOnErrorArg
 }

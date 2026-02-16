@@ -7,6 +7,7 @@ import (
 	"os/signal"
 	"syscall"
 	"time"
+	"unicode"
 
 	"golang.org/x/term"
 )
@@ -50,7 +51,7 @@ func mainLoop() {
 			}
 			if currPos >= len(quote)-1 {
 				endTime := time.Since(startTime)
-				wpm := float64(len(quote)/5) / endTime.Minutes()
+				wpm := float64(typedLength/5) / endTime.Minutes()
 
 				fmt.Print("\033[2J")
 				fmt.Printf("\033[%d;%dH", height/2, (width/2)-7)
@@ -59,6 +60,7 @@ func mainLoop() {
 				if string(char) == "e" {
 					quote = getQuote(quoteLength)
 					currPos = 0
+					typedLength = 0
 				}
 				continue
 			}
@@ -67,10 +69,13 @@ func mainLoop() {
 			}
 
 			if char == quote[currPos] {
+				typedLength++
 				currPos++
 				currColor = Green
-			}
-			if char != quote[currPos] {
+			} else {
+				if !stopOnError && unicode.IsPrint(rune(char)) && !unicode.IsControl(rune(char)) {
+					currPos++
+				}
 				currColor = Red
 			}
 

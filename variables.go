@@ -15,4 +15,6 @@ var (
 	startTime   time.Time
 	currColor   string = Reset
 	quoteLength int
+	typedLength int
+	stopOnError bool = false
 )
