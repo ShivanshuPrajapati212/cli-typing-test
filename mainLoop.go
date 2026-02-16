@@ -59,10 +59,11 @@ func mainLoop() {
 				endTime := time.Since(startTime)
 				wpm := float64(typedLength/5) / endTime.Minutes()
 
+				resLength := len(fmt.Sprintf("Your WPM is %0.f\nPress ENTER to start again!", wpm))
 				fmt.Print("\033[2J")
-				fmt.Printf("\033[%d;%dH", height/2, (width/2)-7)
-				fmt.Printf("Your WPM is %0.f , ", wpm)
-				fmt.Print("Press ENTER to start again!")
+				fmt.Printf("\033[%d;%dH", height/2, (width/2)-resLength/2)
+				fmt.Printf("Your WPM is %0.f, Press ENTER to start again!", wpm)
+
 				if string(char) == "\n" || string(char) == "\r" {
 					quote = getQuote(quoteLength)
 					currPos = 0
