@@ -17,4 +17,5 @@ var (
 	quoteLength int
 	typedLength int
 	stopOnError bool = false
+	typedQuote  string
 )

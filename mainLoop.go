@@ -49,6 +49,12 @@ func mainLoop() {
 				fmt.Print("\r\nManual Ctrl+C detected. Exiting...\r\n")
 				return
 			}
+			if string(char) == "\n" || string(char) == "\r" {
+				quote = getQuote(quoteLength)
+				currPos = 0
+				typedLength = 0
+				typedQuote = ""
+			}
 			if currPos >= len(quote)-1 {
 				endTime := time.Since(startTime)
 				wpm := float64(typedLength/5) / endTime.Minutes()
@@ -56,11 +62,12 @@ func mainLoop() {
 				fmt.Print("\033[2J")
 				fmt.Printf("\033[%d;%dH", height/2, (width/2)-7)
 				fmt.Printf("Your WPM is %0.f , ", wpm)
-				fmt.Print("Press e to start again!")
-				if string(char) == "e" {
+				fmt.Print("Press ENTER to start again!")
+				if string(char) == "\n" || string(char) == "\r" {
 					quote = getQuote(quoteLength)
 					currPos = 0
 					typedLength = 0
+					typedQuote = ""
 				}
 				continue
 			}
@@ -69,21 +76,16 @@ func mainLoop() {
 			}
 
 			if char == quote[currPos] {
+				typedQuote = typedQuote + Green + string(quote[currPos]) + Reset
 				typedLength++
 				currPos++
 				currColor = Green
 			} else {
 				if !stopOnError && unicode.IsPrint(rune(char)) && !unicode.IsControl(rune(char)) {
+					typedQuote = typedQuote + Red + string(quote[currPos]) + Reset
 					currPos++
 				}
 				currColor = Red
-			}
-
-			typedQuote := ""
-			if currPos == 0 {
-				typedQuote = ""
-			} else {
-				typedQuote = quote[0:currPos]
 			}
 
 			remainingQuote := quote[currPos+1:]
@@ -92,7 +94,7 @@ func mainLoop() {
 			fmt.Print("\033[2J")
 			fmt.Printf("\033[%d;%dH", height/2, (width/2)-len(quote)/2)
 
-			fmt.Print(Green + typedQuote + Reset + currColor + string(currQuote) + Reset + remainingQuote)
+			fmt.Print(typedQuote + currColor + string(currQuote) + Reset + remainingQuote)
 
 			fmt.Printf("\033[%d;%dH", height/2, (width/2)-len(quote)/2+currPos)
 
