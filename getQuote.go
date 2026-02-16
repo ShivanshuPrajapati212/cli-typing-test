@@ -22,7 +22,7 @@ func getQuote(count int) string {
 
 	for i := range count {
 		// Generates numbers between 0 and 99
-		randomNumbers[i] = rand.IntN(1000)
+		randomNumbers[i] = rand.IntN(200)
 	}
 
 	scanner := bufio.NewScanner(file)
