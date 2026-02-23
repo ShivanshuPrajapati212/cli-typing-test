@@ -1,3 +1,6 @@
+package main
+
+var WORDLIST = `
 shivanshu
 the
 of
@@ -998,3 +1001,4 @@ quotient
 teeth
 shell
 neck
+`
